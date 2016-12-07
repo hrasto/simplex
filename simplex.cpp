@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-
-=======
-test
->>>>>>> pivotelement
+test2
