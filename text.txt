@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 bla
 bla
 bla
+=======
+hello
+world
+>>>>>>> eb98a9e4d6c2240cf99a87d648d48b1af87c19aa
