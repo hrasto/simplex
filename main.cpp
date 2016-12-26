@@ -17,17 +17,11 @@ void lpsolve(int n, double* c, int k, double** A, double* b){
     // create a tableau instance
     // reorganize the tableau until the wanted state is here (while loop)
 
-    try{
-        Tableau t = Tableau(n,k);
-        t.setNb(A);
-        t.setRs(b);
-        t.setZf(c);
-        t.print();
-        double pe = t.pivotElement();
-        cout << "Pivotelement: " << pe << endl;
-    }catch(...){
-        cout << "No pivot element found" << endl;
-    }
+    Tableau t = Tableau(n,k,c,A,b);
+    //t.setL(2);
+
+    while (t.umformen());
+
 }
 
 int main()
@@ -37,8 +31,30 @@ int main()
     // Daten einlesen
     // Lpsolve Funktion aufrufen
 
-    int n = 3;
-    int k = 2;
+    int n = 2;
+    int k = 3;
+
+    double* c = new double[n]; // zielfunk.
+    c[0] = -3;
+    c[1] = -5;
+
+    double** A = new double*[k]; // nb
+    A[0] = new double[n];
+    A[0][0] = 1;
+    A[0][1] = 0;
+    A[1] = new double[n];
+    A[1][0] = 0;
+    A[1][1] = 2;
+    A[2] = new double[n];
+    A[2][0] = 3;
+    A[2][1] = 2;
+
+    double* b = new double[k];
+    b[0] = 4;
+    b[1] = 12;
+    b[2] = 18;
+
+    /* random werte:
 
     double* c = new double[n];
     for(int i = 0; i < n; ++i)
@@ -54,6 +70,7 @@ int main()
     double* b = new double[k];
     for(int i = 0; i < k; ++i)
         b[i] = rand() % 10;
+    */
 
     lpsolve(n, c, k, A, b);
 

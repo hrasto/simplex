@@ -1,42 +1,59 @@
+/*
+
+Beispiel der Struktur der Variable tab
+
+     +---+---+---+---+---+----+
+     |x1 |x2 |x3 |x4 |x5 |r.S.|
++----+---+---+---+---+---+----+
+|ZF  |   |   |0  |0  |0  |    |
++----+---+---+---+---+---+----+
+|NB1 |   |   |1  |0  |0  |    |
++----+---+---+---+---+---+----+
+|NB2 |   |   |0  |1  |0  |    |
++----+---+---+---+---+---+----+
+|NB3 |   |   |0  |0  |1  |    |
++----+---+---+---+---+---+----+
+
+*/
+
 #ifndef TABLEAU_H
 #define TABLEAU_H
-
-#include <stdexcept>
 
 class Tableau
 {
     // Anzahl der Variablen
     int n;
 
-    // Anzahl der Nebenbedingungen
+    // Anzahl der Nebenbedingungen (also auch Schlupfvariablen)
     int k;
 
-    // Koeffizienten der Zielfunktion
-    double* zf;
+    // Status logs: 0->keine, 1->Zustand des Tableau (def.), 2->Alle Berechnungen
+    int l;
 
-    // Koeffizienten der Nebenbedingungen
-    double** nb;
-
-    // Rechte Seite
-    double* rs;
+    // Die eigentlichen Daten
+    double** tab;
 
     public:
-        Tableau(int n, int k) {
-            if(!(n && k))
-                throw new std::invalid_argument("n und k muessen groesser-gleich 1 sein");
-            this->n = n; this->k = k;
-        }
+        Tableau(int, int, double*, double**, double*);
         virtual ~Tableau();
+
+        /*
         void setZf(double* zf) { this->zf = zf; }
         void setNb(double** nb) { this->nb = nb; }
         void setRs(double* rs) { this->rs = rs; }
         double* getZf(){ return this->zf; }
         double** getNb() { return this->nb; }
         double* getRs(){ return this->rs; }
+        */
+
+        void setL(int);
         int getN(){ return this->n; }
         int getK(){ return this->k; }
         void print();
-        double pivotElement();
+        int pivotSpalte();
+        int pivotZeile(int);
+        double pivotElement(int col, int row);
+        bool umformen();
     protected:
     private:
 };

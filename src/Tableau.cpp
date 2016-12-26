@@ -3,6 +3,7 @@
 #include <cmath>
 #include <limits>
 #include <vector>
+#include <stdexcept>
 
 using namespace std;
 
@@ -13,59 +14,102 @@ class NoPivotException {
     void getMsg(){ cout << msg << '\0'; }
 };
 
+Tableau::Tableau(int n, int k, double* zf, double** nb, double* rs)
+{
+    if(!(n && k))
+        throw new std::invalid_argument("n und k muessen groesser-gleich 1 sein");
+
+    this->l = 1;
+    this->n = n;
+    this->k = k;
+    this->tab = new double*[k+1]; // # von nebenbed. + zielfunktion
+
+    // auffuellen des Tableau mit Werten
+    for (int i = 0; i < k+1; ++i){
+
+        this->tab[i] = new double[n+k+1];
+
+        for(int j = 0; j < n+k+1; ++j)
+            if(i == 0 && j < n) // Zielfunktion - bis anzahl der variablen
+                this->tab[i][j] = zf[j];
+            else
+                if(i && j < n) // Nebenbedingungen - bis anzahl der variablen
+                    this->tab[i][j] = nb[i-1][j];
+                else if(i && j >= n && j < n+k && i-1 == j-n) // Einheitsmatrix
+                    this->tab[i][j] = 1;
+                else if(i && j == n+k) // rechte Seite
+                    this->tab[i][j] = rs[i-1];
+                else
+                    this->tab[i][j] = 0;
+    }
+
+    cout << "----------- Anfangstableau ----------" << endl;
+    print();
+}
+
 Tableau::~Tableau()
 {
     //dtor
 }
 
 void Tableau::print(){
-    cout << "Anzahl der Variablen: " << this->getN() << endl
-        << "Anzahl der Nebenbedingungen: " << this->getK() << endl;
+    //cout << "Anzahl der Variablen: " << this->getN() << endl
+    //    << "Anzahl der Nebenbedingungen: " << this->getK() << endl;
 
-    cout << "ZF:\t";
-    for(int i = 0; i < n; ++i)
-        cout << zf[i] << '\t';
-    cout << endl;
-
-    for(int i = 0; i < k; ++i){
-        cout << i << ". Gl:\t";
-        for(int j = 0; j < n; ++j)
-            cout << nb[i][j] << '\t';
-        cout << "RS: " << rs[i];
+    for(int i = 0; i < k+1; ++i){
+        if(i)
+            cout << i << ".\t";
+        else
+            cout << "ZF\t";
+        for(int j = 0; j < n+k+1; ++j){
+            cout << tab[i][j] << '\t';
+        }
         cout << endl;
     }
+    cout << endl;
 
 }
 
-double Tableau::pivotElement(){
-    // pivotspalte suchen
-    // wenn: kein Eintrag in der ZF negativ -> throw ex. -> fertig
-    // sonst: double wert des
-
+int Tableau::pivotSpalte(){
     double help = 0;
-    int row = 0;
+    //int row = 0;
     int col = 0;
     // den kleinsten nicht-neg. wert der zf. suchen
     for (int i = 0; i < n; i++) {
-        if (zf[i] < help) {
-            help = zf[i];
+        if (tab[0][i] < help) {
+            help = tab[0][i];
             col = i;
         }
     }
 
     if (!(help)) {
-        throw NoPivotException("Kein Pivot wurde gefunden");
+        throw NoPivotException("Keine Pivotspalte gefunden");
+        // weiss nicht ob exception das beste fuer diesen zweck ist :))
     }
 
+    return col;
+}
+
+int Tableau::pivotZeile(int col){
+
+    int row = 0;
     // auswahl der pivot-zeile
-    help = std::numeric_limits<double>::max();
-    for (int i = 0; i < k; ++i)
-        if(nb[i][col] && rs[i] / nb[i][col] < help){
+    double help = std::numeric_limits<double>::max();
+
+    for (int i = 1; i < k+1; ++i)
+        if(tab[i][col] > 0 && tab[i][n+k] / tab[i][col] <= help){
             row = i;
-            help = rs[i] / nb[i][col];
+            help = tab[i][n+k] / tab[i][col];
         }
 
-    //cout << "PZ:" << row;
+    if(!row)
+        throw NoPivotException("Keine Pivotzeile gefunden");
+
+    return row;
+}
+
+double Tableau::pivotElement(int col, int row){
+    return tab[row][col];
 
     /*
     vector<double> helpv;
@@ -82,7 +126,55 @@ double Tableau::pivotElement(){
         }
     }
     */
-
-    return nb[row][col];
 }
 
+bool Tableau::umformen(){
+    int col,row,pe;
+
+    try{
+        col = pivotSpalte();
+        row = pivotZeile(col);
+        pe = pivotElement(col, row);
+    }catch(NoPivotException& ex){
+        if(l){
+            ex.getMsg();
+            cout << endl << "Prozess ist beendet." << endl;
+        }
+        return false;
+    }
+
+    if(l)
+        cout << "-------------- Umformen -------------" << endl
+            << "Pivotspalte: " << col << endl
+            << "Pivotzeile: " << row << endl
+            << "Pivotelement: " << pe << endl << endl;
+
+    for(int i = 0; i < k+1; ++i){
+
+        if(l == 2)
+            cout << "Updating row[ " << i << " ]" << endl;
+
+        if(i == row)
+            continue; // dies muss am ende behandelt werden - sonst können falsche Werte rauskommen
+
+        double x = tab[i][col] / pe;
+        for(int j = 0; j < n+k+1; ++j){
+            tab[i][j] = tab[i][j] - x*tab[row][j];
+
+            if(l == 2)
+                cout << "\tUpdating element[ " << j << " ] -> " << tab[i][j]
+                    << " - " << x << "*" << tab[row][j] << endl;
+        }
+    }
+
+    for (int j = 0; j < n+k+1; ++j)
+        tab[row][j] /= pe;
+
+    if(l) print();
+    return true;
+}
+
+void Tableau::setL(int val){
+    if(val >= 0 && val <= 2)
+        this->l = val;
+}
