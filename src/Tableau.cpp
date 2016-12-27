@@ -151,24 +151,34 @@ bool Tableau::umformen(){
 
     for(int i = 0; i < k+1; ++i){
 
-        if(l == 2)
-            cout << "Updating row[ " << i << " ]" << endl;
-
-        if(i == row)
-            continue; // dies muss am ende behandelt werden - sonst können falsche Werte rauskommen
-
-        double x = tab[i][col] / pe;
-        for(int j = 0; j < n+k+1; ++j){
-            tab[i][j] = tab[i][j] - x*tab[row][j];
+        // wenn i == row -> in der for schleife danach (zeile 174)
+        if(i != row){
 
             if(l == 2)
-                cout << "\tUpdating element[ " << j << " ] -> " << tab[i][j]
-                    << " - " << x << "*" << tab[row][j] << endl;
+                cout << "Updating row[ " << i << " ]" << endl;
+
+            // koeff. zum multiplizieren der pivotzeile
+            double x = tab[i][col];
+
+            for(int j = 0; j < n+k+1; ++j){
+                if(l == 2)
+                    cout << "\tUpdating element[ " << j << " ] -> " << tab[i][j]
+                        << " - " << x << "*" << tab[row][j] << "/" << pe << " = " << tab[i][j] - x*tab[row][j]/pe << endl;
+
+                tab[i][j] -= x*tab[row][j]/pe;
+            }
+
         }
     }
 
-    for (int j = 0; j < n+k+1; ++j)
+    if(l == 2)
+        cout << "Updating row[ " << row << " ] (Pivotzeile)" << endl;
+
+    for (int j = 0; j < n+k+1; ++j){
+        if(l == 2)
+            cout << "\tUpdating element[ " << j << " ] -> " << tab[row][j] << "/" << pe << " = " << tab[row][j]/pe << endl;
         tab[row][j] /= pe;
+    }
 
     if(l) print();
     return true;

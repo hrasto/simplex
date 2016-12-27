@@ -18,7 +18,7 @@ void lpsolve(int n, double* c, int k, double** A, double* b){
     // reorganize the tableau until the wanted state is here (while loop)
 
     Tableau t = Tableau(n,k,c,A,b);
-    //t.setL(2);
+    t.setL(2);
 
     while (t.umformen());
 
