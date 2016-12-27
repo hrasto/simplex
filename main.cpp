@@ -14,11 +14,12 @@ void lpsolve(int n, double* c, int k, double** A, double* b){
     // A - Koeffizienten der Nebenbedingungen
     // b - rechte Seite
 
-    // create a tableau instance
-    // reorganize the tableau until the wanted state is here (while loop)
+    // eine Tableau instance erstellen
+    // umformen, bis möglich
+    // array mit resultaten retournieren
 
     Tableau t = Tableau(n,k,c,A,b);
-    t.setL(2);
+    t.setL(1);
 
     while (t.umformen());
 
