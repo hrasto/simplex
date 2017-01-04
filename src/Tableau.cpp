@@ -16,8 +16,8 @@ class NoPivotException {
 
 Tableau::Tableau(int n, int k, double* zf, double** nb, double* rs)
 {
-    if(!(n && k))
-        throw new std::invalid_argument("n und k muessen groesser-gleich 1 sein");
+    if(n < 1 || k < 1) //$M hier wurde nur n und k gleich null überprüft mit !(n && k)
+        throw std::invalid_argument("n und k muessen groesser-gleich 1 sein"); //$M lt. stackoverflow ohne "new"
 
     this->l = 1;
     this->n = n;
@@ -44,7 +44,7 @@ Tableau::Tableau(int n, int k, double* zf, double** nb, double* rs)
     }
 
     cout << "----------- Anfangstableau ----------" << endl;
-    print();
+    print(); //$M Musst du nicht this.print() verwenden?
 }
 
 Tableau::~Tableau()
@@ -62,6 +62,7 @@ void Tableau::print(){
         else
             cout << "ZF\t";
         for(int j = 0; j < n+k+1; ++j){
+
             cout << tab[i][j] << '\t';
         }
         cout << endl;
@@ -138,7 +139,13 @@ bool Tableau::umformen(){
     }catch(NoPivotException& ex){
         if(l){
             ex.getMsg();
-            cout << endl << "Prozess ist beendet." << endl;
+            cout << endl << "Prozess ist beendet." << endl << endl
+                 << "Die optimale Loesung ist (";
+            for (int i = 1; i < k+1; ++i) {
+                cout << tab[i][n+k];
+                (i==k)?(cout << ") "):(cout << ", ");
+            }
+            cout << "mit ZF-Wert " << tab[0][n+k] << "." << endl;
         }
         return false;
     }
