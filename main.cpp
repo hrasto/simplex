@@ -65,11 +65,9 @@ int x, i, j, n, k;
     f.open(filename);
 
 
-    f >> x;
-    n = x;
+    f >> n;
 
-    f >> x;
-    k = x;
+    f >> k;
     //cout << n << ' ' << k <<endl;
     double* c = new double[n];
     for( i = 0; i < n; i++)
@@ -78,9 +76,9 @@ int x, i, j, n, k;
         c[i] = x;
     }
 
-    for(int i = 0; i < n; i++)
+   /* for(int i = 0; i < n; i++)
        cout << c[i] << ' ';
-    cout << endl;
+    cout << endl;*/
 
     double** A = new double*[k]; // nb
     //double A[100][100];
@@ -102,6 +100,9 @@ int x, i, j, n, k;
         }
 
     }
+
+ 
+
 
     /* random werte:
 
