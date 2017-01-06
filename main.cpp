@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void lpsolve(int n, double* c, int k, double** A, double* b){
+int* lpsolve(int n, double* c, int k, double** A, double* b){
 
     // int n, double* c, int k, double** A, double* b
     // n - Anzahl der Variablen
@@ -24,6 +24,11 @@ void lpsolve(int n, double* c, int k, double** A, double* b){
 
     while (t.umformen());
 
+    //int* res = t.resultat();
+
+    t.printResultat();
+
+    return t.resultat();
 }
 
 int main()

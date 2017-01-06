@@ -195,3 +195,47 @@ void Tableau::setL(int val){
     if(val >= 0 && val <= 2)
         this->l = val;
 }
+
+int* Tableau::resultat(){
+    int* res = new int[n+k];
+
+    for(int i = 0; i < n+k; ++i){
+        bool check = false;
+        int row = 0;
+
+        for(int j = 0; j < k+1; ++j){
+            if(tab[j][i] == 1){
+                if(check == true){
+                    check = false;
+                    break; // set the check to false, break the loop -> res. will be 0
+                }else{
+                    row = j;
+                    check = true;
+                }
+
+            }else if(tab[j][i] != 0 && check){
+                check = false;
+                break; // set the check to false, break the loop -> res. will be 0
+            }
+        }
+
+        if(check){
+            res[i] = tab[row][n+k];
+        }else{
+            res[i] = 0;
+        }
+    }
+
+    return res;
+}
+
+void Tableau::printResultat(){
+    int* res = this->resultat();
+
+    cout << "Resultat: [";
+    for(int i = 0; i < n+k; ++i){
+        if(i) cout << ", ";
+        cout << res[i];
+    }
+    cout << "]" << endl;
+}

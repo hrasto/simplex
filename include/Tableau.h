@@ -54,6 +54,8 @@ class Tableau
         int pivotZeile(int);
         double pivotElement(int col, int row);
         bool umformen();
+        int* resultat();
+        void printResultat();
     protected:
     private:
 };
