@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1482834388 source:c:\users\rasto\c\codeblocks\simplex\src\tableau.cpp
+1483719431 source:c:\users\rasto\c\codeblocks\simplex\src\tableau.cpp
 	"Tableau.h"
 	<iostream>
 	<cmath>
@@ -9,9 +9,10 @@
 
 1482778727 c:\users\rasto\c\codeblocks\simplex\include\tableau.h
 
-1482835638 source:c:\users\rasto\c\codeblocks\simplex\main.cpp
+1483718654 source:c:\users\rasto\c\codeblocks\simplex\main.cpp
 	<iostream>
 	<cstdlib>
 	<cmath>
-	<Tableau.h>
+	<fstream>
+	"Tableau.h"
 

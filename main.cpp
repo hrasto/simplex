@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <fstream>
 #include "Tableau.h"
 
 using namespace std;
@@ -55,11 +56,10 @@ int main()
     b[1] = 12;
     b[2] = 18;*/
 
-
-
-int x, i, j, n, k;
+    int x, i, j, n, k;
 
     string filename;
+    cout << "Geben Sie bitte den Namen des .txt-files ein: " << endl;
     cin >> filename;
     ifstream f;
     f.open(filename);
@@ -100,9 +100,6 @@ int x, i, j, n, k;
         }
 
     }
-
- 
-
 
     /* random werte:
 
