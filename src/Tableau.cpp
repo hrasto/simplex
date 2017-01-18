@@ -1,4 +1,4 @@
-#include "Tableau.h"
+#include "../include/Tableau.h"
 #include <iostream>
 #include <cmath>
 #include <limits>
@@ -8,10 +8,10 @@
 using namespace std;
 
 class NoPivotException {
-    char * msg;
+    string msg;
     public:
-    NoPivotException(char* msg){this->msg = msg;}
-    void getMsg(){ cout << msg << '\0'; }
+    NoPivotException(string msg){this->msg = msg;}
+    void getMsg(){ cout << msg; }
 };
 
 Tableau::Tableau(int n, int k, double* zf, double** nb, double* rs)
@@ -43,8 +43,8 @@ Tableau::Tableau(int n, int k, double* zf, double** nb, double* rs)
                     this->tab[i][j] = 0;
     }
 
-    cout << "----------- Anfangstableau ----------" << endl;
-    print(); //$M Musst du nicht this.print() verwenden?
+    cout << endl << "----------- Anfangstableau ----------" << endl;
+    print();
 }
 
 Tableau::~Tableau()

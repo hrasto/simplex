@@ -2,7 +2,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <fstream>
-#include "Tableau.h"
+#include "include/Tableau.h"
 
 using namespace std;
 
@@ -31,7 +31,7 @@ int* lpsolve(int n, double* c, int k, double** A, double* b){
     return t.resultat();
 }
 
-int main()
+int main(int argc, char **argv)
 {
     //cout << "Hello world!" << endl;
 
@@ -62,12 +62,92 @@ int main()
     b[2] = 18;*/
 
     int x, i, j, n, k;
-
-    string filename;
-    cout << "Geben Sie bitte den Namen des .txt-files ein: " << endl;
-    cin >> filename;
     ifstream f;
-    f.open(filename);
+
+    if (argc == 1) {
+
+        f.open("testfiles/test2.txt");
+
+    } else if (argc == 2) {
+
+        string cache = argv[1];
+
+        if (cache == "-f") {
+
+            string filename;
+            cout << "Geben Sie bitte den Pfad der Testdatei ein: " << endl;
+            cin >> filename;
+            f.open(filename);
+
+        } else if (cache == "-h") {
+
+            int systemRet = system("less Readme.txt");
+            if(systemRet == -1) {cerr << endl << "Readme.txt nicht gefunden!" << endl; return 1;}
+
+            return 0;
+
+        } else if (cache == "-s") {
+			
+			cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
+			return 0;
+			
+        } else {
+
+            cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
+            return 1;
+
+        }
+
+    } else if (argc == 3) {
+
+        string cache = argv[1];
+
+        if (cache == "-f") {
+
+            f.open(argv[2]);
+
+		} else if (cache == "-s") {
+			
+			cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
+			return 0;
+			
+        } else {
+
+            cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
+            return 1;
+
+        }
+
+	} else if (argc == 4) {
+		
+		string help = argv[1];
+		
+		if (help != "-s") {
+			cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
+            return 1;
+		}
+		
+		string cache = argv[2];
+
+        if (cache == "-f") {
+
+            cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
+			return 0;
+
+        } else {
+
+            cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
+            return 1;
+
+        }
+		
+    } else {
+
+        cerr << endl << "Ungueltige Anzahl an Parametern! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
+        return 1;
+
+    }
+
 
 
     f >> n;

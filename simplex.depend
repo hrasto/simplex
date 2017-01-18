@@ -16,3 +16,13 @@
 	<fstream>
 	"Tableau.h"
 
+1483800667 source:c:\users\maurice\ops\simplex\src\tableau.cpp
+	"Tableau.h"
+	<iostream>
+	<cmath>
+	<limits>
+	<vector>
+	<stdexcept>
+
+1483800667 c:\users\maurice\ops\simplex\include\tableau.h
+
