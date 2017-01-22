@@ -30,6 +30,9 @@ class Tableau
     // Status logs: 0->keine, 1->Zustand des Tableau (def.), 2->Alle Berechnungen
     int l;
 
+	//Anzahl der Iterationen
+	int it;
+	
     // Die eigentlichen Daten
     double** tab;
 
@@ -47,8 +50,9 @@ class Tableau
         */
 
         void setL(int);
-        int getN(){ return this->n; }
-        int getK(){ return this->k; }
+        int getN() {return this->n;}
+        int getK() {return this->k;}
+		int getIt() {return this->it;}
         void print();
         int pivotSpalte();
         int pivotZeile(int);

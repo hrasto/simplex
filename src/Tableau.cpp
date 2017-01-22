@@ -22,6 +22,7 @@ Tableau::Tableau(int n, int k, double* zf, double** nb, double* rs)
     this->l = 1;
     this->n = n;
     this->k = k;
+	this->it = 0;
     this->tab = new double*[k+1]; // # von nebenbed. + zielfunktion
 
     // auffuellen des Tableau mit Werten
@@ -110,6 +111,7 @@ int Tableau::pivotZeile(int col){
 }
 
 double Tableau::pivotElement(int col, int row){
+	this->it++;
     return tab[row][col];
 
     /*
@@ -140,7 +142,7 @@ bool Tableau::umformen(){
         if(l){
             ex.getMsg();
             cout << endl << "Prozess ist beendet." << endl << endl
-                 << "Die optimale Loesung ist (";
+                 << "Die optimale Loesung nach " << this->it << " Iterationen ist (";
             for (int i = 1; i < k+1; ++i) {
                 cout << tab[i][n+k];
                 (i==k)?(cout << ") "):(cout << ", ");
@@ -152,6 +154,7 @@ bool Tableau::umformen(){
 
     if(l)
         cout << "-------------- Umformen -------------" << endl
+			<< "Iterationen: " << this->it << endl
             << "Pivotspalte: " << col << endl
             << "Pivotzeile: " << row << endl
             << "Pivotelement: " << pe << endl << endl;
