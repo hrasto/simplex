@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int* lpsolve(int n, double* c, int k, double** A, double* b){
+int* lpsolve(int n, double* c, int k, double** A, double* b, bool sensitivity){
 
     // int n, double* c, int k, double** A, double* b
     // n - Anzahl der Variablen
@@ -18,23 +18,45 @@ int* lpsolve(int n, double* c, int k, double** A, double* b){
     // eine Tableau instance erstellen
     // umformen, bis möglich
     // array mit resultaten retournieren
+	
+	Tableau t = Tableau(n,k,c,A,b);
+	t.setL(0);
 
-    Tableau t = Tableau(n,k,c,A,b);
-    t.setL(1);
+	while (t.umformen());
 
-    while (t.umformen());
+	//int* res = t.resultat();
 
-    //int* res = t.resultat();
+	t.printResultat();
 
-    t.printResultat();
-
+	if (sensitivity) {
+		for (int i = 0; i < n; i++) {
+			t.rhs_sensitivity(i, c);
+		}
+	} 
+	
     return t.resultat();
+}
+
+int illegal_par() {
+	cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen Sie die Datei readme.txt" << endl << endl;
+    return 1;
+}
+
+int illegal_par_count() {
+	cerr << endl << "Ungueltige Anzahl an Parametern! Fuer Hilfe lesen Sie die Datei readme.txt" << endl << endl;
+    return 1;
+}
+
+string get_filename() {
+	string fn;
+    cout << "Geben Sie bitte den Pfad der Testdatei ein: " << endl;
+    cin >> fn;
+	return fn;
 }
 
 int main(int argc, char **argv)
 {
-    //cout << "Hello world!" << endl;
-
+	
     // Daten einlesen
     // Lpsolve Funktion aufrufen
 
@@ -62,9 +84,24 @@ int main(int argc, char **argv)
     b[2] = 18;*/
 
     int x, i, j, n, k;
+	
+	bool sensitivity = false;
+	
     ifstream f;
 
-    if (argc == 1) {
+	/////////////////////////////////////////////////////////
+	// ARGUMENTS
+	
+	/*
+	for (int i = 1; i < argc; i++) {
+		string cache = argv[i];
+		if (cache == "-s") {
+			cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
+			return 0;
+		}
+	}//*/
+	
+    if (argc == 1) { // $ ./simplex
 
         f.open("testfiles/test2.txt");
 
@@ -72,83 +109,59 @@ int main(int argc, char **argv)
 
         string cache = argv[1];
 
-        if (cache == "-f") {
+        if (cache == "-f") { // $ ./simplex -f
 
-            string filename;
-            cout << "Geben Sie bitte den Pfad der Testdatei ein: " << endl;
-            cin >> filename;
-            f.open(filename);
+            f.open(get_filename());
 
-        } else if (cache == "-h") {
+        } else if (cache == "-h") { // $ ./simplex -h
 
             int systemRet = system("less Readme.txt");
             if(systemRet == -1) {cerr << endl << "Readme.txt nicht gefunden!" << endl; return 1;}
 
             return 0;
 
-        } else if (cache == "-s") {
+        } else if (cache == "-s") { // $ ./simplex -s
 			
-			cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
-			return 0;
+			f.open("testfiles/test2.txt");
+			sensitivity = true;
 			
-        } else {
-
-            cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
-            return 1;
-
-        }
+        } else {return illegal_par();}
 
     } else if (argc == 3) {
 
         string cache = argv[1];
+		string help = argv[2];
 
-        if (cache == "-f") {
+        if (cache == "-f") {  // $ ./simplex -f <path>
 
-            f.open(argv[2]);
+            f.open(help);
 
-		} else if (cache == "-s") {
+		} else if (cache == "-s") {  // $ ./simplex -s -f
 			
-			cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
-			return 0;
+			if (help != "-f") {return illegal_par();}
 			
-        } else {
-
-            cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
-            return 1;
-
-        }
+            f.open(get_filename());
+			sensitivity = true;
+			
+        } else {return illegal_par();}
 
 	} else if (argc == 4) {
 		
 		string help = argv[1];
 		
-		if (help != "-s") {
-			cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
-            return 1;
-		}
+		if (help != "-s") {return illegal_par();}
 		
 		string cache = argv[2];
 
-        if (cache == "-f") {
+        if (cache == "-f") {  // $ ./simplex -s -f <path>
 
-            cout << endl << "Sensitivitaetsanalyse noch nicht funktionsfaehig" << endl << endl;
-			return 0;
+			f.open(argv[3]);
+			sensitivity = true;
 
-        } else {
-
-            cerr << endl << "Ungueltige Parameter! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
-            return 1;
-
-        }
+        } else {return illegal_par();}
 		
-    } else {
-
-        cerr << endl << "Ungueltige Anzahl an Parametern! Fuer Hilfe lesen sie die Datei readme.txt" << endl << endl;
-        return 1;
-
-    }
-
-
+    } else {return illegal_par_count();}
+	/////////////////////////////////////////////////////////
 
     f >> n;
 
@@ -204,7 +217,7 @@ int main(int argc, char **argv)
         b[i] = rand() % 10;
     */
 
-    lpsolve(n, c, k, A, b);
+    lpsolve(n, c, k, A, b, sensitivity);
 
     return 0;
 }

@@ -89,6 +89,8 @@ int Tableau::pivotSpalte(){
         // weiss nicht ob exception das beste fuer diesen zweck ist :))
     }
 
+	
+	
     return col;
 }
 
@@ -138,6 +140,8 @@ bool Tableau::umformen(){
         col = pivotSpalte();
         row = pivotZeile(col);
         pe = pivotElement(col, row);
+		rowsv.push_back(row);
+		colsv.push_back(col);
     }catch(NoPivotException& ex){
         if(l){
             ex.getMsg();
@@ -241,4 +245,62 @@ void Tableau::printResultat(){
         cout << res[i];
     }
     cout << "]" << endl;
+}
+
+void Tableau::getShadowprices(){
+	/*double* res = new double[k];
+	
+	cout << endl << "Schattenpreise:" << endl;
+	
+	for (int i = 0; i < k; i++) {
+		res[i] = this->tab[0][i+n];
+		cout << "Pi_" << i+1 << " = " << res[i] << endl;
+	}*/
+	
+	cout << endl << "x_(n+1)\tZeile" << endl;
+	
+	for (unsigned int i = 0; i < rowsv.size(); i++) {
+		cout << colsv[i] << "\t" << rowsv[i] << endl;
+	}
+	
+	cout << "colsv\trowsv" << endl;
+	
+	cout << endl;
+}
+
+void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
+	int index = var;
+	double help;
+	double neg = 0;
+	double pos = 0;
+	
+	for (unsigned int i = 0; i < colsv.size(); i++) {
+		if (colsv.at(i) == var) {
+			index = rowsv.at(i);
+		}
+	}
+	
+	for (int i = 0; i < n + k; i++) {
+		if (i != var && tab[index][i]) {
+			help = tab[0][i] / tab[index][i];
+			
+			if (help > 0) {
+				if (pos && help < pos) {pos = help;} else if (!pos) {pos = help;}
+			}
+			if (help < 0) {
+				if (neg && help > neg) {neg = help;} else if (!neg) {neg = help;}
+			}
+		}
+	}
+	
+	help = tab[var+1][n+k];
+	
+	cout << endl << "Aendert sich x" << var + 1 << " von " << abs(zielfunktion[var]) << " auf "
+		 << abs(zielfunktion[var]) << " + t" << var +  1 << " (mit ";
+	if (neg) {cout << neg << " <= ";}
+	cout << "t" << var + 1;
+	if (pos) {cout << " <= " << pos;}
+	cout << "), waehrend die anderen\nVariablen unveraendert bleiben, so bleibt die Optimalloesung erhalten.\nDann ist " << tab[0][n+k];
+	if (help < 0) {cout << " - " << abs(help);} else {cout << " + " << help;}
+	cout << "t" << var + 1 << " der neue maximale Zielfunktionswert." << endl << endl;
 }

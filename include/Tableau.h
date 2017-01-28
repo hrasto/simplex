@@ -19,6 +19,14 @@ Beispiel der Struktur der Variable tab
 #ifndef TABLEAU_H
 #define TABLEAU_H
 
+#include <iostream>
+#include <cmath>
+#include <limits>
+#include <vector>
+#include <stdexcept>
+
+using namespace std;
+
 class Tableau
 {
     // Anzahl der Variablen
@@ -35,6 +43,9 @@ class Tableau
 	
     // Die eigentlichen Daten
     double** tab;
+	
+	vector<double> rowsv;
+	vector<double> colsv;
 
     public:
         Tableau(int, int, double*, double**, double*);
@@ -60,6 +71,8 @@ class Tableau
         bool umformen();
         int* resultat();
         void printResultat();
+		void getShadowprices();
+		void rhs_sensitivity(int var, double* zielfunktion);
     protected:
     private:
 };
