@@ -203,8 +203,8 @@ void Tableau::setL(int val){
         this->l = val;
 }
 
-int* Tableau::resultat(){
-    int* res = new int[n+k];
+double* Tableau::resultat(){
+    double* res = new double[n+k];
 
     for(int i = 0; i < n+k; ++i){
         bool check = false;
@@ -237,7 +237,7 @@ int* Tableau::resultat(){
 }
 
 void Tableau::printResultat(){
-    int* res = this->resultat();
+    double* res = this->resultat();
 
     cout << "Resultat: [";
     for(int i = 0; i < n+k; ++i){
@@ -245,6 +245,18 @@ void Tableau::printResultat(){
         cout << res[i];
     }
     cout << "]" << endl;
+}
+
+void Tableau::printResultat(int var){
+    double* res = this->resultat();
+
+	cout << "[";
+    for(int i = 0; i < n+k; ++i){
+        if(i) cout << ", ";
+        cout << res[i];
+		if (i == var) cout << " + c" << i+1;
+    }
+    cout << "]";
 }
 
 void Tableau::getShadowprices(){
@@ -268,13 +280,11 @@ void Tableau::getShadowprices(){
 	cout << endl;
 }
 
-void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
-	int index = var;
+void Tableau::zf_sensitivity(int var, double* zielfunktion) {
+	int index = -1;
 	double help;
 	double neg = 0;
 	double pos = 0;
-	
-	cout << " --- Sensitivitaetsanalyse der rechten Seite ---" << endl;
 	
 	for (unsigned int i = 0; i < colsv.size(); i++) {
 		if (colsv.at(i) == var) {
@@ -282,10 +292,11 @@ void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
 		}
 	}
 	
+	if (index == -1) {return;}
+	
 	for (int i = 0; i < n + k; i++) {
 		if (i != var && tab[index][i]) {
 			help = tab[0][i] / tab[index][i];
-			
 			if (help > 0) {
 				if (pos && help < pos) {pos = help;} else if (!pos) {pos = help;}
 			}
@@ -294,8 +305,7 @@ void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
 			}
 		}
 	}
-	
-	help = tab[var+1][n+k];
+	help = tab[index][n+k];
 	
 	cout << endl << "Aendert sich x" << var + 1 << " von " << abs(zielfunktion[var]) << " auf "
 		 << abs(zielfunktion[var]) << " + t" << var +  1 << " (mit ";
@@ -305,4 +315,15 @@ void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
 	cout << "), waehrend die anderen\nVariablen unveraendert bleiben, so bleibt die Optimalloesung erhalten.\nDann ist " << tab[0][n+k];
 	if (help < 0) {cout << " - " << abs(help);} else {cout << " + " << help;}
 	cout << "t" << var + 1 << " der neue maximale Zielfunktionswert." << endl;
+}
+
+void Tableau::rhs_sensitivity(int var, double* rhs) {
+	bool bhelp = (rhs[var] < 0);
+	
+	cout << endl << "Aendert sich die Restriktion " << rhs[var] << " auf " << rhs[var] << " + c" << var+1 << " (mit c" <<  var+1 << " >= " << tab[var+1][n+k]*(-1) << "), waehrend die restliche\nrechte Seite konstant gehalten wird, so bleibt die Optimalloesung qualitativ gleich." << endl;
+	printResultat(var);
+	cout << " ist nun die neue Optimalloesung." << endl;
+	cout << "Der neue Zielfunktionswert ist nun " << tab[0][n+k];
+	if (bhelp) {cout << " - ";} else {cout << " + ";}
+	cout << tab[0][var+n] << "c" << var + 1 << "." << endl;
 }

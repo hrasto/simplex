@@ -69,10 +69,12 @@ class Tableau
         int pivotZeile(int);
         double pivotElement(int col, int row);
         bool umformen();
-        int* resultat();
-        void printResultat();
+        double* resultat();
+		void printResultat();
+        void printResultat(int var);
 		void getShadowprices();
-		void rhs_sensitivity(int var, double* zielfunktion);
+		void zf_sensitivity(int var, double* zielfunktion);
+		void rhs_sensitivity(int var, double* rhs);
     protected:
     private:
 };

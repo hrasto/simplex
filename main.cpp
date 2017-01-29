@@ -6,7 +6,7 @@
 
 using namespace std;
 
-int* lpsolve(int n, double* c, int k, double** A, double* b, bool sensitivity){
+double* lpsolve(int n, double* c, int k, double** A, double* b, bool sensitivity){
 
     // int n, double* c, int k, double** A, double* b
     // n - Anzahl der Variablen
@@ -29,9 +29,17 @@ int* lpsolve(int n, double* c, int k, double** A, double* b, bool sensitivity){
 	t.printResultat();
 
 	if (sensitivity) {
+		cout << endl << " *** SENSITIVITAETSANALYSE ***" << endl;
+		cout << endl << " --- Aenderung der Koeffizienten der Zielfunktion ---" << endl;
 		for (int i = 0; i < n; i++) {
-			t.rhs_sensitivity(i, c);
+			t.zf_sensitivity(i, c);
 		}
+		
+		cout << endl << " --- Aenderung der rechten Seite ---" << endl;
+		for (int i = 0; i < k; i++) {
+			t.rhs_sensitivity(i,b);
+		}
+		cout << endl;
 	} 
 	
     return t.resultat();
