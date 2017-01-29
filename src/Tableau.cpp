@@ -274,6 +274,8 @@ void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
 	double neg = 0;
 	double pos = 0;
 	
+	cout << " --- Sensitivitaetsanalyse der rechten Seite ---" << endl;
+	
 	for (unsigned int i = 0; i < colsv.size(); i++) {
 		if (colsv.at(i) == var) {
 			index = rowsv.at(i);
@@ -302,5 +304,5 @@ void Tableau::rhs_sensitivity(int var, double* zielfunktion) {
 	if (pos) {cout << " <= " << pos;}
 	cout << "), waehrend die anderen\nVariablen unveraendert bleiben, so bleibt die Optimalloesung erhalten.\nDann ist " << tab[0][n+k];
 	if (help < 0) {cout << " - " << abs(help);} else {cout << " + " << help;}
-	cout << "t" << var + 1 << " der neue maximale Zielfunktionswert." << endl << endl;
+	cout << "t" << var + 1 << " der neue maximale Zielfunktionswert." << endl;
 }

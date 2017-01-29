@@ -20,7 +20,7 @@ int* lpsolve(int n, double* c, int k, double** A, double* b, bool sensitivity){
     // array mit resultaten retournieren
 	
 	Tableau t = Tableau(n,k,c,A,b);
-	t.setL(0);
+	t.setL(1);
 
 	while (t.umformen());
 
